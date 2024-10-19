@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %} Home Page {% endblock %}
+
+{% block content %}
+<div class="container">
+      <h3 class="mt-4">Welcome to Home Page!</h3>
+        {% if user.is_authenticated %}
+            <a href="{% url 'create_post' %}" class="text-decoration-none create-post btn btn-primary">Create Post</a>
+        {% else %}
+        {% endif %}
+
+      <!-- Latest News Section -->
+    <section class="latest-news">
+        <h2>Latest News</h2>
+        <div class="grid-container">
+            {% for post in latest_news %}
+            <div class="post-card">
+                <a href="{% url 'post_detail' post.id %}">
+                    <img src="{{ post.image.url }}" alt="{{ post.title }}">
+                    <h3 class="card-title">{{ post.title }}</h3>
+                </a>
+                <p>{{post.content | truncatewords:10}}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Most Read Posts -->
+    <section class="most-read">
+        <h2>Most Read Posts</h2>
+        <div class="grid-container">
+            {% for post in most_read_posts %}
+            <div class="post-card">
+                <a href="{% url 'post_detail' post.id %}">
+                    <img src="{{ post.image.url }}" alt="{{ post.title }}">
+                    <h3>{{ post.title }}</h3>
+                </a>
+                <p>{{ post.excerpt }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Most Read This Week -->
+    <section class="most-read-week">
+        <h2>Most Read Posts (Last 7 Days)</h2>
+        <div class="grid-container">
+            {% for post in most_read_week %}
+            <div class="post-card">
+                <a href="{% url 'post_detail' post.id %}">
+                    <img src="{{ post.image.url }}" alt="{{ post.title }}">
+                    <h3>{{ post.title }}</h3>
+                </a>
+                <p>{{ post.excerpt }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Most Read This Month -->
+    <section class="most-read-month">
+        <h2>Most Read Posts (Last 30 Days)</h2>
+        <div class="grid-container">
+            {% for post in most_read_month %}
+            <div class="post-card">
+                <a href="{% url 'post_detail' post.id %}">
+                    <img src="{{ post.image.url }}" alt="{{ post.title }}">
+                    <h3>{{ post.title }}</h3>
+                </a>
+                <p>{{ post.excerpt }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Latest Posts by Category -->
+    <section class="latest-posts-by-category">
+        <h2>Latest Posts by Category</h2>
+        {% for category in categories %}
+        <div class="category-section">
+            <h3>{{ category.name }}</h3>
+            <div class="grid-container">
+                {% for post in category.posts.all|slice:":5" %}
+                <div class="post-card">
+                    <a href="{% url 'post_detail' post.id %}">
+                        <img src="{{ post.image.url }}" alt="{{ post.title }}">
+                        <h4>{{ post.title }}</h4>
+                    </a>
+                    <p>{{ post.excerpt }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Blog. All rights reserved.</p>
+    </footer>
+        
+        
+</div>
+
+    
+{% endblock %}

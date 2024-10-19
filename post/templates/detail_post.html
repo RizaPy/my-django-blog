@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %} Detail | Page {% endblock %}
+
+{% block content %}
+<div class="row mt-3">
+    <div class="col-2 me-3">
+        <img src="{{ post.image.url}}" alt="{{post.title}}" class='cover-pic'>
+    </div>
+    <div class="col-6">
+        
+        <h3 class="my-3">{{post.title}}</a></h3>
+        <p class="align-center justify-content-between">{{post.content}}</p>
+        <div class="d-flex justify-content-between">
+
+            <p>category: <i>{{post.category}}</i></p>
+            <p><i>{{post.created_at}}</i></p>
+
+        </div>
+    </div>
+
+    <p>Reviews</p> <hr>
+        {% for review in post.reviews.all %}
+            {% if review %}
+                <p> Review created by <strong>{{ review.author }} </strong>at <span class="fw-lighter">{{ review.created_at }}</span></p>
+                <p>{{ review.comment }}</p>
+            {% else %}
+                <p>Not yet comment</p>
+            {% endif %}
+        {% endfor %}
+    <p>
+        <form action="{% url 'post_detail' post.id %}" method="post">
+            {% csrf_token %}
+            {{review_form | crispy}}
+            <button type="submit" class="btn btn-primary"> Submit </button>
+        </form>
+    </p>
+</div>
+    
+{% endblock %}
