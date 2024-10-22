@@ -8,12 +8,15 @@
     
     <div class="container">
         <div class="row">
-            <div class="col-2">
-
+            <div class="col-4">
+                <form method="get" class="d-flex mb-3">
+                    <input type="search" class="form-control me-2", name="q", placeholder="Search">
+                    <button type="submit" class="btn btn-success">Search</button>
+                </form>
             </div>
 
             <ul class="list-unstyled">
-                {% for post in posts %}
+                {% for post in page_obj %}
                     {% if post.image %}
                     <img src="{{ post.image.url }}" alt="{{ post.title }}"  class='cover-pic'>
                     {% else %}
@@ -25,6 +28,22 @@
                     <li>{{post.created_at}}</li>
                 {% endfor %}
             </ul>
+            
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    {% if page_obj.has_previous %}  
+                    <li class="page-item"><a class="page-link" href="{% url 'post' %}?page=1">&laquo; first</a></li>
+                    <li class="page-item"><a class="page-link" href="{% url 'post' %}?page={{page_obj.previous_page_number}}">previous</a></li>
+                    {% endif %}
+
+                    <li class="page-item active"><a class=" page-link" href="#">{{page_obj.number}}</a></li>
+
+                    {% if page_obj.has_next %}
+                    <li class="page-item"><a class="page-link" href="{% url 'post' %}?page={{page_obj.next_page_number}}">next</a></li>
+                    <li class="page-item"><a class="page-link" href="{% url 'post' %}?page={{page_obj.paginator.num_pages}}">last &raquo;</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
         </div>
         
         

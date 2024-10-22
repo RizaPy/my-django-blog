@@ -30,6 +30,7 @@ class Post(models.Model):
     status = models.CharField(choices=Status_choices, null=True, max_length=50)
     tags = models.ManyToManyField('Tag', related_name='posts')
     views = models.IntegerField(default=0)  # Ko'rishlar soni uchun maydon
+    is_approved = models.BooleanField(default=False)  # Admin tasdiqlashi uchun
 
     def __str__(self):
         return self.title

@@ -49,6 +49,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'myBlog.urls'
+LOGIN_URL = '/users/login/'
 
 TEMPLATES = [
     {

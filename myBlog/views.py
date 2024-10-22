@@ -6,9 +6,9 @@ from post.models import Post, Category
 
 def home(request):
     # So'nggi yangiliklar (oxirgi 5 ta post)
-    latest_news = Post.objects.all().order_by('-created_at')[:5]
+    latest_news = Post.objects.filter(is_approved=True).order_by('-created_at')[:5]
 
-    # Eng ko'p o'qilgan postlar (umumiy)
+    # Eng ko'p o'qilgan postlar (umumiy)    
     most_read_posts = Post.objects.all().order_by('-views')[:5]
 
     # Oxirgi haftada eng ko'p o'qilganlar

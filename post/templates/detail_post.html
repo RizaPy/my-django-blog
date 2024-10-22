@@ -21,22 +21,35 @@
         </div>
     </div>
 
-    <p>Reviews</p> <hr>
-        {% for review in post.reviews.all %}
-            {% if review %}
-                <p> Review created by <strong>{{ review.author }} </strong>at <span class="fw-lighter">{{ review.created_at }}</span></p>
-                <p>{{ review.comment }}</p>
-            {% else %}
-                <p>Not yet comment</p>
-            {% endif %}
-        {% endfor %}
-    <p>
-        <form action="{% url 'post_detail' post.id %}" method="post">
-            {% csrf_token %}
-            {{review_form | crispy}}
-            <button type="submit" class="btn btn-primary"> Submit </button>
-        </form>
-    </p>
+    <div class="row ">
+        <div class="col-6">
+            <form action="{% url 'reviews' post.id %}" method="post">
+                {% csrf_token %}
+                {{review_form | crispy}}
+                <button type="submit" class="btn btn-primary"> Add Reviews </button>
+            </form>
+        
+        </div>
+    </div>
+
+    {% if post.reviews.all %}
+        <p>Reviews</p> <hr>
+        <div class="row">
+            <div class="col-6">
+                {% for review in post.reviews.all %}
+                {% if review %}
+                    <p> Review created by <strong>{{ review.author }} </strong>at <span class="fw-lighter">{{ review.created_at }}</span></p>
+                    <p>{{ review.comment }}</p>
+                {% else %}
+                    <p>Not yet comment</p>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+        
+    
+        
 </div>
     
 {% endblock %}

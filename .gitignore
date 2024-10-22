@@ -1,0 +1,24 @@
+# Python fayllari
+*.pyc
+__pycache__/
+
+# Virtual environment papkasi
+venv/
+env/
+pipenv/
+
+# Django migration fayllari
+*/migrations/
+
+# Yashirin fayllar (kalitlar)
+*.env
+
+# Media va static fayllar 
+media/
+static/
+
+# VSCode fayllari
+.vscode/
+
+# IDE fayllari
+.idea/

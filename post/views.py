@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views import View
 from django.views.generic.edit import CreateView
+from django.core.paginator import Paginator
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from post.models import Post, Category, PostReview
 from post.forms import PostForm, PostReviewForm
@@ -13,8 +15,17 @@ class PostListView(View):
         posts = Post.objects.all().order_by('-published_time')
         reviews = PostReview.objects.all()
         latest_posts = Post.objects.all().filter()[:5]
+
+        search_query = request.GET.get('q')
+        if search_query:
+            posts = posts.filter(title__icontains=search_query)
+
+        paginator = Paginator(posts, 5)
+
+        page_num = request.GET.get('page', 1)
+        page_obj = paginator.get_page(page_num)
         context = {
-            'posts':posts,
+            'page_obj':page_obj,
             'latest_posts':latest_posts,
             'categories':categories,
             'reviews':reviews
@@ -31,21 +42,6 @@ class PostDetailView(View):
         }
         return render(request, 'detail_post.html', context)
     
-    def post(self, request, id):
-        post = Post.objects.get(id=id)
-        reviews = PostReview.objects.all()
-        
-        if request.method == "POST":
-            review_form = PostReviewForm(request.POST)
-            if review_form.is_valid():
-                review_form.save(commit=False)
-                review_form.post = post
-                review_form.save()
-                return redirect('post_detail', id=post.id)
-        else:
-            review_form = PostReviewForm()
-        return render(request, 'detail_post.html', {'post':post, 'reviews':reviews, 'review_form':review_form})
-
 
 
 def post_create_view(request):
@@ -54,6 +50,7 @@ def post_create_view(request):
         if form.is_valid():
             post = form.save(commit=False)
             post.author = request.user
+            post.is_approved = False  # Post tasdiqlanmagan holda saqlanadi
             post.save()
             return redirect('home')
     else:
@@ -61,3 +58,15 @@ def post_create_view(request):
     return render(request, 'create_post.html', {'form':form})
 
 
+class AddReviewView(LoginRequiredMixin, View):
+    def post(self, request, id):
+        post = Post.objects.get(id=id)
+        review_form = PostReviewForm(data=request.POST)
+        if review_form.is_valid():
+            PostReview.objects.create(
+                        post=post,
+                        author = request.user,
+                        comment = review_form.cleaned_data['comment']
+            )
+            return redirect(reverse('post_detail', kwargs ={'id':id}))
+        return render(request, 'detail_post.html', {'post':post, 'review_form':review_form})
