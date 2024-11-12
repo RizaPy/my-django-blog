@@ -8,11 +8,17 @@ from .views import home
 
 app_name = 'post'
 app_name = 'users'
+app_name = 'api'
+app_name = 'two_factor'
+
 urlpatterns = [
     path('', home, name='home'),
     path('post/', include('post.urls')),
     path("users/", include('users.urls')),
+    path('api/v1/', include('api.urls')),
 
+    # path('account/', include(('two_factor.urls'), namespace='two_factor')),
+    path('api-auth/', include('rest_framework.urls')),
     path('admin/', admin.site.urls),
 ]
 

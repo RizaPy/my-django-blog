@@ -6,6 +6,12 @@ name = "pypi"
 [packages]
 django = "*"
 crispy-bootstrap5 = "*"
+rabbitmq = "*"
+celery = "*"
+djangorestframework = "*"
+markdown2 = "*"
+django-two-factor-auth = "*"
+phonenumbers = "*"
 
 [dev-packages]
 

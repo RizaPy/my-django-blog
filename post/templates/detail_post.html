@@ -33,16 +33,25 @@
     </div>
 
     {% if post.reviews.all %}
-        <p>Reviews</p> <hr>
+        <p class="mt-3">Reviews</p> <hr>
         <div class="row">
             <div class="col-6">
                 {% for review in post.reviews.all %}
-                {% if review %}
-                    <p> Review created by <strong>{{ review.author }} </strong>at <span class="fw-lighter">{{ review.created_at }}</span></p>
-                    <p>{{ review.comment }}</p>
-                {% else %}
-                    <p>Not yet comment</p>
-                {% endif %}
+                    {% if review %}
+                        <p> Review created by <strong>{{ review.author }} </strong>at <span class="fw-lighter">{{ review.created_at }}</span>
+                            {% if review.author == request.user %}
+                                <a href="{% url 'edit_review' post.id review.id %}"><i class="bi bi-pen"></i></a>
+                                <a href="{% url 'confirm_delete_review' post.id review.id %}"><i class="bi bi-trash"></i></a>
+                            {% else %} 
+
+                            {% endif %}
+
+                        </p>
+                        
+                        <p>{{ review.comment }}</p>
+                    {% else %}
+                        <p>Not yet comment</p>
+                    {% endif %}
                 {% endfor %}
             </div>
         </div>

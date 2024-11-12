@@ -30,9 +30,18 @@ INSTALLED_APPS = [
     # external apps
     "crispy_forms",
     "crispy_bootstrap5",
+    'rest_framework',
+    'rest_framework.authtoken',
+
+    'django_otp',
+    'django_otp.plugins.otp_static',
+    'django_otp.plugins.otp_totp',
+    'two_factor',
+    'django.contrib.sites',
 
     'post',
     'users',
+    'api',
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
@@ -46,10 +55,15 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_otp.middleware.OTPMiddleware',
 ]
 
 ROOT_URLCONF = 'myBlog.urls'
 LOGIN_URL = '/users/login/'
+LOGIN_URL = 'two_factor:login'
+LOGOUT_URL = 'two_factor:logout'
+LOGIN_REDIRECT_URL = '/'
+
 
 TEMPLATES = [
     {
@@ -126,3 +140,11 @@ MEDIA_ROOT = (BASE_DIR/'media')
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # Yoki boshqa SMTP server
+EMAIL_HOST_USER = 'rizamat4@gmail.com'
+EMAIL_HOST_PASSWORD = 'uouq ywpc knai iyrh'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False

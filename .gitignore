@@ -22,3 +22,5 @@ static/
 
 # IDE fayllari
 .idea/
+
+.Pipfile

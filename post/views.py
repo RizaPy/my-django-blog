@@ -4,6 +4,7 @@ from django.views import View
 from django.views.generic.edit import CreateView
 from django.core.paginator import Paginator
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
 
 from post.models import Post, Category, PostReview
 from post.forms import PostForm, PostReviewForm
@@ -59,8 +60,8 @@ def post_create_view(request):
 
 
 class AddReviewView(LoginRequiredMixin, View):
-    def post(self, request, id):
-        post = Post.objects.get(id=id)
+    def post(self, request, review_id):
+        post = Post.objects.get(id=review_id)
         review_form = PostReviewForm(data=request.POST)
         if review_form.is_valid():
             PostReview.objects.create(
@@ -68,5 +69,57 @@ class AddReviewView(LoginRequiredMixin, View):
                         author = request.user,
                         comment = review_form.cleaned_data['comment']
             )
-            return redirect(reverse('post_detail', kwargs ={'id':id}))
+            return redirect(reverse('post_detail', kwargs ={'id':review_id}))
         return render(request, 'detail_post.html', {'post':post, 'review_form':review_form})
+
+class EditReviewView(LoginRequiredMixin, View):
+    def get(self, request, post_id, review_id):
+        post = Post.objects.get(id=post_id)
+        review = PostReview.objects.get(id=review_id)
+        review_form = PostReviewForm(instance=review)
+
+        context = {
+            'post':post,
+            'review':review,
+            'review_form':review_form
+        }
+        
+        return render(request, 'edit_review.html', context)
+    
+    def post(self, request, post_id, review_id):
+        post = Post.objects.get(id=  post_id)
+        review = PostReview.objects.get(id=review_id)
+        review_form = PostReviewForm(instance=review, data=request.POST)
+
+        context = {
+            'post':post,
+            'review':review,
+            'review_form':review_form
+        }
+
+        if review_form.is_valid:
+            review_form.save()
+            return redirect(reverse('post_detail', kwargs ={'id':post_id}))
+        return render(request, 'edit_review.html', context)
+
+class ConfirmDeleteReview(LoginRequiredMixin, View):
+    def get(self, request, post_id, review_id):
+        post = Post.objects.get(id=post_id)
+        review = PostReview.objects.get(id=review_id) 
+        review_form = PostReviewForm(instance=review)
+        
+        context = {
+            'post':post,
+            'review':review,
+            'review_form':review_form
+        }
+        return render(request, 'confirm_delete_review.html', context)
+
+class DeleteReviewView(LoginRequiredMixin, View):
+    def get(self, request, post_id, review_id):
+        post = Post.objects.get(id=post_id)
+        review = PostReview.objects.get(id=review_id) 
+        
+        review.delete()
+        messages.success(request, 'You succesifully deleted this review')
+        return redirect(reverse('post_detail', kwargs ={'id':post_id}))
