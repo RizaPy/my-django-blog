@@ -12,6 +12,7 @@ djangorestframework = "*"
 markdown2 = "*"
 django-two-factor-auth = "*"
 phonenumbers = "*"
+django-environ = "*"
 
 [dev-packages]
 
